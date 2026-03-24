@@ -1,9 +1,16 @@
 #!/usr/bin/env node
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
+import {
+  CallToolRequestSchema,
+  ListToolsRequestSchema,
+} from "@modelcontextprotocol/sdk/types.js";
 import { config } from "./config.js";
-import { submitTransaction, SubmitTransactionInputSchema } from "./tools/submit_transaction.js";
+import { submitTransaction } from "./tools/submit_transaction.js";
+import {
+  GetAccountBalanceInputSchema,
+  SubmitTransactionInputSchema,
+} from "./schemas/tools.js";
 
 /**
  * Initialize the pulsar MCP server.
@@ -23,7 +30,7 @@ class PulsarServer {
         capabilities: {
           tools: {},
         },
-      }
+      },
     );
 
     this.setupHandlers();
@@ -36,7 +43,8 @@ class PulsarServer {
       tools: [
         {
           name: "get_account_balance",
-          description: "Get the current XLM and issued asset balances for a Stellar account.",
+          description:
+            "Get the current XLM and issued asset balances for a Stellar account.",
           inputSchema: {
             type: "object",
             properties: {
@@ -82,7 +90,8 @@ class PulsarServer {
               wait_timeout_ms: {
                 type: "number",
                 default: 30000,
-                description: "Polling timeout in milliseconds (1 000 – 120 000).",
+                description:
+                  "Polling timeout in milliseconds (1 000 – 120 000).",
               },
             },
             required: ["xdr"],
@@ -96,21 +105,46 @@ class PulsarServer {
       const { name, arguments: args } = request.params;
 
       if (name === "get_account_balance") {
+        // Validate input schema
+        const parsed = GetAccountBalanceInputSchema.safeParse(args);
+        if (!parsed.success) {
+          const errorDetails = parsed.error.errors.map((err) => ({
+            path: err.path.join("."),
+            message: err.message,
+          }));
+          throw new Error(
+            `Invalid input for get_account_balance: ${JSON.stringify(errorDetails)}`,
+          );
+        }
+
+        // TODO: Implement actual get_account_balance logic
         return {
           content: [
             {
               type: "text",
-              text: JSON.stringify({ message: "Mocked response for get_account_balance", input: args }),
+              text: JSON.stringify({
+                message: "get_account_balance is not yet implemented",
+                input: parsed.data,
+              }),
             },
           ],
         };
       }
 
       if (name === "submit_transaction") {
+        // Validate input schema
         const parsed = SubmitTransactionInputSchema.safeParse(args);
         if (!parsed.success) {
-          throw new Error(`Invalid input: ${parsed.error.message}`);
+          const errorDetails = parsed.error.errors.map((err) => ({
+            path: err.path.join("."),
+            message: err.message,
+          }));
+          throw new Error(
+            `Invalid input for submit_transaction: ${JSON.stringify(errorDetails)}`,
+          );
         }
+
+        // Tool handler performs its own validation and returns structured error responses
         const result = await submitTransaction(parsed.data);
         return {
           content: [{ type: "text", text: JSON.stringify(result) }],
@@ -130,7 +164,9 @@ class PulsarServer {
   async run() {
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    console.error(`pulsar MCP server v1.0.0 is running on ${config.stellarNetwork}...`);
+    console.error(
+      `pulsar MCP server v1.0.0 is running on ${config.stellarNetwork}...`,
+    );
   }
 }
 

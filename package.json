@@ -2,14 +2,42 @@
   "name": "pulsar",
   "version": "1.0.0",
   "description": "MCP Server for Stellar/Soroban",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GideonBature/pulsar.git"
+  },
+  "homepage": "https://github.com/GideonBature/pulsar#readme",
+  "type": "module",
+  "bin": "dist/index.js",
   "main": "dist/index.js",
   "scripts": {
-    "lint": "echo 'Linting passed'",
-    "typecheck": "echo 'Typecheck passed'",
-    "test": "echo 'Tests passed'",
-    "build": "mkdir -p dist && touch dist/index.js && echo 'Build passed'"
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
-  "keywords": [],
+  "keywords": [
+    "mcp",
+    "stellar",
+    "soroban",
+    "rpc",
+    "blockchain"
+  ],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.1"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.1",
+    "@stellar/stellar-sdk": "^12.3.0",
+    "dotenv": "^16.3.1",
+    "zod": "^3.22.4"
+  }
 }

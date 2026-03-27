@@ -66,8 +66,9 @@ vi.mock("@stellar/stellar-sdk", async () => {
 // ---------------------------------------------------------------------------
 // Import AFTER mocks are set up
 // ---------------------------------------------------------------------------
-import { submitTransaction } from "./submit_transaction.js";
 import { config } from "../config.js";
+
+import { submitTransaction } from "./submit_transaction.js";
 
 // ---------------------------------------------------------------------------
 // Tests

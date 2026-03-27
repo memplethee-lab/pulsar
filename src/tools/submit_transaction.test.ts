@@ -92,6 +92,7 @@ describe("submitTransaction", () => {
       xdr: FAKE_XDR,
       sign: true,
       wait_for_result: false,
+      wait_timeout_ms: 30_000,
     });
 
     expect(result).toMatchObject({
@@ -123,6 +124,7 @@ describe("submitTransaction", () => {
       xdr: FAKE_XDR,
       sign: false,
       wait_for_result: false,
+      wait_timeout_ms: 30_000,
     });
 
     expect(result).toMatchObject({
@@ -192,6 +194,7 @@ describe("submitTransaction", () => {
       xdr: FAKE_XDR,
       sign: false,
       wait_for_result: false,
+      wait_timeout_ms: 30_000,
     });
 
     expect(result).toMatchObject({
@@ -256,6 +259,7 @@ describe("submitTransaction", () => {
       xdr: FAKE_XDR,
       sign: true,
       wait_for_result: false,
+      wait_timeout_ms: 30_000,
     });
 
     expect(mockSign).toHaveBeenCalledOnce();
